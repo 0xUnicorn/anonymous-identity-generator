@@ -14,6 +14,8 @@ For emails you would need a catch all address on your domain or a 3rd party prov
 
 ## Installation
 
+> Supported: Python3.10.x
+
 ## How to?
 
 
