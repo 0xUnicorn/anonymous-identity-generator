@@ -3,7 +3,10 @@ import uuid
 import hashlib
 import string
 import random
-import yaml
+import json
+import os
+
+import config
 
 
 def _generate_md5() -> str:
@@ -85,17 +88,17 @@ def print_stdout(username: str = '',
 
 
 def load_config(path: str) -> dict:
-    """Loads config.yaml file into Python dicts.
+    """Loads config file into Python dicts.
     """
     try:
-        print(f'{path}/config.yaml')
-        with open(f'{path}/config.yaml') as cfg:
+        with open(path) as cfg:
             try:
-                cfg = yaml.safe_load(cfg)
+                cfg = json.load(cfg)
                 if cfg:
                     return cfg
                 return {}
-            except yaml.YAMLError as ex:
+            except json.JSONDecodeError as ex:
+                print(f'[!] Fatal error in config file: {path}')
                 print(ex)
                 exit(1)
     except FileNotFoundError:
@@ -105,11 +108,14 @@ def load_config(path: str) -> dict:
 def get_configs() -> dict:
     """Combines default and user configs with priority for userconfig.
     """
-    default_cfg = load_config('.')
-    print(default_cfg)
-    user_cfg = load_config('~/.config/anonidgen')
-    print(user_cfg)
-    return {**default_cfg, **user_cfg}
+    default_config = config.DEFAULT_CONFIG
+    user_home = os.path.expanduser('~')
+    user_cfg = load_config(f'{user_home}/.config/anonidgen/config.json')
+    cfg = default_config.copy()
+    for key in default_config:
+        if key in user_cfg and user_cfg[key]:
+            cfg[key].update(user_cfg[key])
+    return default_config
 
 
 def main() -> None:
