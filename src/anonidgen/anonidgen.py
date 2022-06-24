@@ -84,31 +84,50 @@ def print_stdout(username: str = '',
         print(f'[+] Password({pass_len}): {password} | [MISSING XCLIP!]')
 
 
-def main(cfg: dict) -> None:
-    username = generate_username(12)
-    email = generate_email('example.com', chars=6, prefix='test')
-    email_clip = copy_to_clipboard(email, 'p')
-    password = generate_password(32)
-    pass_clip = copy_to_clipboard(password, 'c')
-    print_stdout(username, email, password, pass_clip, email_clip)
-
-
-def get_config() -> dict:
+def load_config(path: str) -> dict:
+    """Loads config.yaml file into Python dicts.
+    """
     try:
-        with open('../../config.yaml') as cfg: # TODO CHANGE BEFORE PR
+        print(f'{path}/config.yaml')
+        with open(f'{path}/config.yaml') as cfg:
             try:
-                return yaml.safe_load(cfg)
+                cfg = yaml.safe_load(cfg)
+                if cfg:
+                    return cfg
+                return {}
             except yaml.YAMLError as ex:
                 print(ex)
-                exit()
+                exit(1)
     except FileNotFoundError:
         return {}
 
 
+def get_configs() -> dict:
+    """Combines default and user configs with priority for userconfig.
+    """
+    default_cfg = load_config('.')
+    print(default_cfg)
+    user_cfg = load_config('~/.config/anonidgen')
+    print(user_cfg)
+    return {**default_cfg, **user_cfg}
+
+
+def main() -> None:
+    cfg = get_configs()
+    username = generate_username(cfg['username'].get('chars'))
+    email = generate_email(
+        domain=cfg['email'].get('domain'),
+        chars=cfg['email'].get('chars'),
+        prefix=cfg['email'].get('prefix'))
+    password = generate_password(cfg['password'].get('chars'))
+    email_clip = copy_to_clipboard(email, 'p')
+    pass_clip = copy_to_clipboard(password, 'c')
+    print_stdout(username, email, password, pass_clip, email_clip)
+
+
 if __name__ == '__main__':
     try:
-        cfg = get_config()
-        main(cfg)
+        main()
     except KeyboardInterrupt:
         pass
 

@@ -48,3 +48,24 @@ $ anonidgen
 [+] Email [MIDDLE MOUSE]: test-58ef2a@example.com
 [*] Password(32) [CLIPBOARD]: ********************************
 ```
+
+## Customization
+
+By default the `src/anonidgen/config.yaml` file will be used. If you would like to change the default values, you can do so by copying the file into `~/.config/anonidgen/config.yaml` and change the values.
+
+The local `~/.config/anonidgen/config.yaml` takes priority and you don't have to overwrite all values, only the ones you need to.
+
+**config.yaml**
+
+```yaml
+username:
+  chars: 16
+
+email:
+  domain: 'guerrillamail.com'
+  chars: 12
+  prefix: ''
+
+password:
+  chars: 32
+```
