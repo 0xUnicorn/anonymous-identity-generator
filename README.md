@@ -51,21 +51,25 @@ $ anonidgen
 
 ## Customization
 
-By default the `src/anonidgen/config.yaml` file will be used. If you would like to change the default values, you can do so by copying the file into `~/.config/anonidgen/config.yaml` and change the values.
+By default the `anonidgen._DEFAULT_CONFIG` will be used. If you would like to change the default values, you can do so by creating the file `~/.config/anonidgen/config.json` and change the values.
 
-The local `~/.config/anonidgen/config.yaml` takes priority and you don't have to overwrite all values, only the ones you need to.
+The local `~/.config/anonidgen/config.json` takes priority and you don't have to overwrite all values, only the ones you need to.
 
-**config.yaml**
+**config.json**
 
-```yaml
-username:
-  chars: 16
-
-email:
-  domain: 'guerrillamail.com'
-  chars: 12
-  prefix: ''
-
-password:
-  chars: 32
+```json
+{
+    "username": {
+        "chars": 16
+    },
+    "email": {
+        "domain": "guerillamail.com",
+        "chars": 12,
+        "prefix": ""
+    },
+    "password": {
+        "chars": 32
+    }
+}
 ```
+

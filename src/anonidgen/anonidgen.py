@@ -6,7 +6,20 @@ import random
 import json
 import os
 
-import config
+
+_DEFAULT_CONFIG = {
+    "username": {
+        "chars": 16
+    },
+    "email": {
+        "domain": "guerillamail.com",
+        "chars": 12,
+        "prefix": ""
+    },
+    "password": {
+        "chars": 32
+    }
+}
 
 
 def _generate_md5() -> str:
@@ -108,14 +121,13 @@ def load_config(path: str) -> dict:
 def get_configs() -> dict:
     """Combines default and user configs with priority for userconfig.
     """
-    default_config = config.DEFAULT_CONFIG
     user_home = os.path.expanduser('~')
     user_cfg = load_config(f'{user_home}/.config/anonidgen/config.json')
-    cfg = default_config.copy()
-    for key in default_config:
+    cfg = _DEFAULT_CONFIG.copy()
+    for key in _DEFAULT_CONFIG:
         if key in user_cfg and user_cfg[key]:
             cfg[key].update(user_cfg[key])
-    return default_config
+    return cfg
 
 
 def main() -> None:
